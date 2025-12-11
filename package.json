@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "electron:start": "npm run build && electron .",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "deploy": "npm run build && echo > dist/.nojekyll && gh-pages -d dist"
   },
   "build": {
     "appId": "com.bpmn.desktop",
@@ -39,6 +40,7 @@
     "diagram-js-minimap": "^5.2.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
+    "gh-pages": "^6.3.0",
     "vite": "^7.2.7",
     "vite-plugin-pwa": "^1.2.0"
   },

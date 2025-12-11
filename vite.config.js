@@ -17,6 +17,8 @@ export default defineConfig({
                 description: 'Easy Tool to manipulate BPMN files',
                 theme_color: '#ffffff',
                 display: 'standalone',
+                scope: './',
+                start_url: './',
                 background_color: '#ffffff',
                 icons: [
                     {
