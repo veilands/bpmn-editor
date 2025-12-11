@@ -1,0 +1,144 @@
+:root {
+    --primary: #007acc;
+    --bg: #f3f3f3;
+    --border: #ccc;
+    --text-color: #333;
+    --header-height: 50px;
+    --crumb-height: 40px;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-color);
+}
+
+#layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.toolbar button {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.toolbar button:hover {
+    background: #eee;
+}
+
+.toolbar button:disabled {
+    color: #aaa;
+    background: #f9f9f9;
+    cursor: not-allowed;
+    border-color: #eee;
+}
+
+#canvas {
+    flex: 1;
+    position: relative;
+    background: white;
+    background-image: radial-gradient(#ddd 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* BJS Overrides */
+.djs-minimap {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Native Drilldown is now enabled */
+/* .bjs-drilldown { display: inherit; } - Default */
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+}
+
+.filename-display {
+    background: #f0f0f0;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modal-actions button.primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}

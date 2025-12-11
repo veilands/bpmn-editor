@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BPMN Drill-Down Demo</title>
+    <!-- Grab the latest bpmn-js dist – no ancient relics -->
+    <script src="https://unpkg.com/bpmn-js@15/dist/bpmn-modeler.development.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@15/dist/assets/bpmn-js.css" />
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@15/dist/assets/diagram-js.css" />
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@15/dist/assets/bpmn-font/css/bpmn-embedded.css" />
+</head>
+
+<body>
+    <div id="canvas" style="height: 600px; border: 1px solid #ccc;"></div>
+
+    <script>
+        // Sample BPMN XML with a collapsed sub-process (expandable guts inside)
+        const bpmnXML = `<?xml version="1.0" encoding="UTF-8"?>
+    <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                      xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                      xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+      <bpmn:process id="Process_Main" isExecutable="false">
+        <bpmn:startEvent id="StartEvent_Main" />
+        <bpmn:subProcess id="SubProcess_Collapsed" name="Sneaky Sub Shit">
+          <bpmn:flowElement id="flowElementInSub">
+            <bpmn:task id="Task_InSub" name="Hidden Task 1" />
+            <bpmn:sequenceFlow id="Flow_InSub" sourceRef="Task_InSub" targetRef="EndEvent_InSub" />
+            <bpmn:endEvent id="EndEvent_InSub" />
+          </bpmn:flowElement>
+        </bpmn:subProcess>
+        <bpmn:sequenceFlow id="Flow_MainToSub" sourceRef="StartEvent_Main" targetRef="SubProcess_Collapsed" />
+      </bpmn:process>
+      <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Main">
+          <bpmndi:BPMNShape id="_BPMNShape_StartEvent" bpmnElement="StartEvent_Main">
+            <dc:Bounds x="150" y="200" width="36" height="36" />
+          </bpmndi:BPMNShape>
+          <bpmndi:BPMNShape id="_BPMNShape_SubProcess" bpmnElement="SubProcess_Collapsed">
+            <dc:Bounds x="250" y="180" width="100" height="80" />
+          </bpmndi:BPMNShape>
+          <bpmndi:BPMNEdge id="BPMNEdge_Flow_MainToSub" bpmnElement="Flow_MainToSub">
+            <di:waypoint x="186" y="218" />
+            <di:waypoint x="250" y="218" />
+          </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+      </bpmndi:BPMNDiagram>
+    </bpmn:definitions>`;
+
+        // Init the modeler – boom, drill-down enabled out the box
+        const modeler = new BpmnJS({ container: '#canvas' });
+
+        // Load that XML
+        async function loadDiagram() {
+            try {
+                const { warnings } = await modeler.importXML(bpmnXML);
+                if (warnings.length) {
+                    console.warn('XML warnings, you sloppy bastard:', warnings);
+                }
+                // Zoom to fit, 'cause why not
+                modeler.get('canvas').zoom('fit-viewport');
+            } catch (err) {
+                console.error('XML import fucked up:', err);
+            }
+        }
+
+        loadDiagram();
+
+        // Optional: Listen for drill-down events if you wanna hook some custom shit (e.g., log or UI tweaks)
+        modeler.on('root.added', (event) => {
+            console.log('Drilled into sub-process:', event.element.id);  // Fires on drill-in
+        });
+    </script>
+</body>
+
+</html>
