@@ -17,14 +17,19 @@ export default defineConfig({
                 description: 'Easy Tool to manipulate BPMN files',
                 theme_color: '#ffffff',
                 display: 'standalone',
-                scope: './',
-                start_url: './',
+                scope: '/',
+                start_url: '/',
                 background_color: '#ffffff',
                 icons: [
                     {
-                        src: 'vite.svg',
-                        sizes: 'any',
-                        type: 'image/svg+xml'
+                        src: 'icon.png',
+                        sizes: '192x192',
+                        type: 'image/png'
+                    },
+                    {
+                        src: 'icon.png',
+                        sizes: '512x512',
+                        type: 'image/png'
                     }
                 ]
             },

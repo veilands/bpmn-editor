@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BPMN Editor (Vite)</title>
+    <title>BPMN Editor</title>
+    <link rel="icon" href="favicon.ico" />
     <!-- Vite handles CSS import via JS, but we can also link if strictly static. 
          Best practice in Vite is to import CSS in JS or let Vite inject it. 
          We imported './style.css' in 'main.js' so no link needed here. -->
@@ -14,7 +15,7 @@
     <div id="layout">
         <header>
             <div class="logo">
-                <img src="/vite.svg" alt="Vite Logo" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                <img src="vite.svg" alt="Vite Logo" style="height: 24px; vertical-align: middle; margin-right: 8px;">
                 BPMN Editor
             </div>
             <div class="toolbar">
@@ -22,6 +23,7 @@
                 <button id="btn-open">Open</button>
                 <button id="btn-save">Save</button>
                 <button id="btn-save-as">Save As</button>
+                <button id="btn-export-png">Export PNG</button>
                 <button id="btn-close">Close</button>
             </div>
         </header>

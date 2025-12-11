@@ -52,6 +52,7 @@ async function init() {
     document.getElementById('btn-open').addEventListener('click', openFile);
     document.getElementById('btn-save').addEventListener('click', saveFile);
     document.getElementById('btn-save-as').addEventListener('click', saveAsFile);
+    document.getElementById('btn-export-png').addEventListener('click', exportAsPng);
     document.getElementById('btn-close').addEventListener('click', closeDiagram);
 
     // Dirty State Listener
@@ -70,6 +71,11 @@ async function init() {
 
     // Shortcuts
     document.addEventListener('keydown', handleShortcuts);
+
+    // Drag & Drop
+    const dropZone = document.body;
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
 
     // Load Default or Empty
     try {
@@ -247,10 +253,89 @@ async function saveAsFile() {
     } catch (e) { console.error(e); }
 }
 
+
+
+async function exportAsPng() {
+    try {
+        const { svg } = await bpmnModeler.saveSVG();
+
+        // Create an Image to render the SVG
+        const img = new Image();
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+
+            // White background (otherwise transparency might look black in some viewers)
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.drawImage(img, 0, 0);
+
+            // Download
+            const link = document.createElement('a');
+            link.download = `diagram-${Date.now()}.png`; // Simple timestamp name
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            URL.revokeObjectURL(url);
+        };
+
+        img.src = url;
+
+    } catch (err) {
+        console.error('Error exporting PNG', err);
+        alert('Could not export PNG: ' + err.message);
+    }
+}
+
 function handleShortcuts(e) {
     if ((e.ctrlKey || e.metaKey)) {
         if (e.key === 's') { e.preventDefault(); saveFile(); }
         if (e.key === 'o') { e.preventDefault(); openFile(); }
+    }
+}
+
+// ==========================================
+// DRAG & DROP HANDLERS
+// ==========================================
+function handleDragOver(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+}
+
+async function handleFileSelect(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith('.bpmn') || name.endsWith('.xml')) {
+        if (!(await checkUnsavedChanges())) return;
+
+        try {
+            const text = await file.text();
+            await bpmnModeler.importXML(text);
+
+            fileHandle = null;
+            isDirty = true;
+            document.title = `BPMN Editor - ${file.name} *`;
+            updateToolbar();
+        } catch (err) {
+            console.error('Error processing dropped file', err);
+            alert('Could not open file: ' + err.message);
+        }
+    } else {
+        alert('Only .bpmn and .xml files are supported.');
     }
 }
 
@@ -264,6 +349,7 @@ function updateToolbar() {
     const btnOpen = document.getElementById('btn-open');
     const btnSave = document.getElementById('btn-save');
     const btnSaveAs = document.getElementById('btn-save-as');
+    const btnExportPng = document.getElementById('btn-export-png');
     const btnClose = document.getElementById('btn-close');
 
     // Always visible & valid
@@ -275,9 +361,11 @@ function updateToolbar() {
     // Session Dependent
     if (isSessionActive || isDirty) {
         btnSaveAs.disabled = false;
+        btnExportPng.disabled = false;
         btnClose.disabled = false;
     } else {
         btnSaveAs.disabled = true;
+        btnExportPng.disabled = true;
         btnClose.disabled = true;
     }
 
