@@ -1,0 +1,1 @@
+{"name":"BPMN Editor","short_name":"BPMN","description":"Easy Tool to manipulate BPMN files","start_url":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","lang":"en","scope":"./","icons":[{"src":"vite.svg","sizes":"any","type":"image/svg+xml"}]}
